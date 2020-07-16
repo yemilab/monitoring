@@ -1,0 +1,16 @@
+- name: Check ansible_facts['os_family']
+  debug:
+    msg: OS family is {{ ansible_facts['os_family'] }}
+    verbosity: 1
+
+- name: Upgrade all packages for RadHat family
+  dnf:
+    name: "*"
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Upgrade all packages for Debian family
+  apt:
+    name: "*"
+    state: latest
+  when: ansible_facts['os_family'] == 'Debian'
