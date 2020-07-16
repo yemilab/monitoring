@@ -1,0 +1,34 @@
+- name: Install archive tools
+  dnf:
+    name:
+      - tar
+      - gzip
+      - bzip2
+      - zip
+      - unzip
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Install archive tools
+  apt:
+    name:
+      - tar
+      - gzip
+      - bzip2
+      - zip
+      - unzip
+    state: latest
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Install Python3
+  dnf:
+    name: python3
+    state: latest
+
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Install Python3
+  apt:
+    name: python3
+    state: latest
+  when: ansible_facts['os_family'] == 'Debian'
