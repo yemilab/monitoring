@@ -1,0 +1,19 @@
+---
+- name: Clone slowmonitoring project
+  git:
+    repo: "{{ slowmonitoring['gitrepo'] }}"
+    dest: "{{ slowmonitoring['basedir'] }}"
+    update: yes
+
+- name: Create virtural environment
+  pip:
+    requirements: "{{ slowmonitoring['basedir'] }}/requirements.txt"
+    virtualenv: "{{ slowmonitoring['basedir'] }}/venv"
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Create virtural environment
+  pip:
+    requirements: "{{ slowmonitoring['basedir'] }}/requirements.txt"
+    virtualenv: "{{ slowmonitoring['basedir'] }}/venv"
+    virtualenv_command: 'python3 -m virtualenv'
+  when: ansible_facts['os_family'] == 'Debian'

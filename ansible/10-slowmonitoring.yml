@@ -1,9 +1,8 @@
 ---
-- name: Set monitoring server up
+- name: Install Telegraf
   hosts: all
   become: yes
   become_method: sudo
 
   roles:
-    - basic
-  
+    - slowmonitoring

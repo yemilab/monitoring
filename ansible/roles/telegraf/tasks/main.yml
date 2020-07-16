@@ -22,11 +22,6 @@
     dest: /tmp/{{ telegraf[ansible_facts['architecture']] }}
     remote_src: yes
 
-- git:
-    repo: 'https://foosball.example.org/path/to/repo.git'
-    dest: "{{ slowmonitoring['basedir'] }}"
-    update: no
-
 - name: Copy Telegraf
   copy:
     src: /tmp/{{ telegraf[ansible_facts['architecture']] }}/bin/telegraf
