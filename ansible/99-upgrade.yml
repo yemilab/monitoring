@@ -1,5 +1,5 @@
 ---
-- name: Install monitoring server
+- name: Upgrade OS
   hosts: all
   become: yes
   become_method: sudo

@@ -1,5 +1,5 @@
 ---
-- name: Install Telegraf
+- name: Install slowmonitoring
   hosts: all
   become: yes
   become_method: sudo
