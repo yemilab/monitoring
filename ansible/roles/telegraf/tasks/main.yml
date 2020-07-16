@@ -1,0 +1,22 @@
+- name: Check architechture
+  debug:
+    msg: "{{ ansible_facts['architecture'] }}"
+    verbosity: 1
+
+- name: Download Telegraf
+  get_url:
+    url: https://dl.influxdata.com/telegraf/releases/{{ telegraf[ansible_facts['architecture']] }}.tar.gz
+    dest: /tmp
+    mode: 0644
+
+- name: Create /tmp/telegraf
+  file:
+    path: /tmp/{{ telegraf[ansible_facts['architecture']] }}
+    state: directory
+    mode: '0755'
+
+- name: Extract Telegraf
+  unarchive:
+    src: /tmp/{{ telegraf[ansible_facts['architecture']] }}.tar.gz
+    dest: /tmp/{{ telegraf[ansible_facts['architecture']] }}
+    remote_src: yes

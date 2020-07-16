@@ -1,0 +1,8 @@
+---
+- name: Install Telegraf
+  hosts: all
+  become: yes
+  become_method: sudo
+
+  roles:
+    - telegraf

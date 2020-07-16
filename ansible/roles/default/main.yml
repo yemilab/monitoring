@@ -1,0 +1,7 @@
+- name: Set hostname
+  hostname:
+    name: "{{ hostname }}"
+
+- name: Set timezone
+  timezone:
+    name: Asia/Seoul

@@ -1,0 +1,5 @@
+---
+# https://github.com/influxdata/telegraf/releases
+telegraf:
+  x86_64: telegraf-1.14.5-static_linux_amd64
+  aarch64: telegraf-1.14.5_linux_arm64
