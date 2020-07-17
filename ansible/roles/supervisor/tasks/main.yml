@@ -1,0 +1,15 @@
+---
+- name: Install Supervisor
+  pip:
+    name: supervisor
+    virtualenv: "{{ slowmonitoring['basedir'] }}/venv"
+
+- name: Register supervisor to systemd
+  template:
+    src: supervisor.service.j2
+    dest: /etc/systemd/system/supervisor.service
+
+- name: Create supervisor.conf
+  template:
+    src: supervisor.conf.j2
+    dest: "{{ slowmonitoring['basedir'] }}/supervisor/supervisor.conf"

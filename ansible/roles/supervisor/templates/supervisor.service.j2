@@ -1,0 +1,16 @@
+# supervisord service for systemd (CentOS 7.0+)
+# by ET-CS (https://github.com/ET-CS)
+[Unit]
+Description=Supervisor daemon
+
+[Service]
+Type=forking
+ExecStart={{ slowmonitoring['basedir'] }}/bin/supervisord -c {{ slowmonitoring['basedir'] }}/supervisor/supervisor.conf
+ExecStop={{ slowmonitoring['basedir'] }}/bin/supervisorctl $OPTIONS shutdown
+ExecReload={{ slowmonitoring['basedir'] }}/bin/supervisorctl $OPTIONS reload
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target
