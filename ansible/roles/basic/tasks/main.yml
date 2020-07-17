@@ -10,6 +10,18 @@
     state: latest
   when: ansible_facts['os_family'] == 'Debian'
 
+- name: Install Vim
+  dnf:
+    name: vim
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Install Vim
+  apt:
+    name: vim
+    state: latest
+  when: ansible_facts['os_family'] == 'Debian'
+
 - name: Install archive tools
   dnf:
     name:
