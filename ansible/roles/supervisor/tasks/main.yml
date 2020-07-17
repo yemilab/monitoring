@@ -4,7 +4,7 @@
     name: supervisor
     virtualenv: "{{ slowmonitoring['basedir'] }}/venv"
 
-- name: Register supervisor to systemd
+- name: Register Supervisor to systemd
   template:
     src: supervisor.service.j2
     dest: /etc/systemd/system/supervisor.service
@@ -13,3 +13,10 @@
   template:
     src: supervisor.conf.j2
     dest: "{{ slowmonitoring['basedir'] }}/supervisor/supervisor.conf"
+
+- name: Enable and start Supervisor
+  systemd:
+    name: supervisor
+    state: started
+    daemon_reload: yes
+    enabled: yes
