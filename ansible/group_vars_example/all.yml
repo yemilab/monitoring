@@ -1,4 +1,0 @@
----
-slowmonitoring:
-  basedir: /opt/slowmonitoring
-  gitrepo: https://github.com/yemilab/monitoring.git
