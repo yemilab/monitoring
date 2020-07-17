@@ -1,0 +1,8 @@
+---
+- name: Create accounts
+  hosts: all
+  become: yes
+  become_method: sudo
+
+  roles:
+    - account
