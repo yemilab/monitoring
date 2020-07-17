@@ -1,9 +1,0 @@
----
-- name: Set monitoring server up
-  hosts: all
-  become: yes
-  become_method: sudo
-
-  roles:
-    - basic
-  

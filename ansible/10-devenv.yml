@@ -1,8 +1,9 @@
 ---
-- name: Install slowmonitoring
+- name: Create development environment
   hosts: all
   become: yes
   become_method: sudo
 
   roles:
+    - basic
     - slowmonitoring
