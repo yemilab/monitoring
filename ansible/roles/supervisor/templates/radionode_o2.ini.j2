@@ -1,9 +1,0 @@
-[program:rad7]
-command=/usr/bin/python3 scripts/rad7.py
-process_name=%(program_name)s
-directory=/opt/slowmonitoring
-autostart=true
-autorestart=unexpected
-user=ubuntu
-redirect_stderr=true
-stdout_logfile=/opt/slowmonitoring/log/rad7.log
