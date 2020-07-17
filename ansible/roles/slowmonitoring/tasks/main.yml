@@ -14,14 +14,6 @@
   pip:
     requirements: "{{ slowmonitoring['basedir'] }}/scripts/requirements-{{ venvtype }}.txt"
     virtualenv: "{{ slowmonitoring['basedir'] }}/venv"
-  when: ansible_facts['os_family'] == 'RedHat'
-
-- name: Create virtural environment
-  pip:
-    requirements: "{{ slowmonitoring['basedir'] }}/scripts/requirements-{{ venvtype }}.txt"
-    virtualenv: "{{ slowmonitoring['basedir'] }}/venv"
-    virtualenv_command: 'python3 -m virtualenv'
-  when: ansible_facts['os_family'] == 'Debian'
 
 - name: Download Telegraf
   get_url:
