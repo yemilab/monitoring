@@ -1,7 +1,0 @@
----
-- name: Add user
-  user:
-    name: iu
-    shell: /bin/bash
-    groups: wheel
-    append: yes
