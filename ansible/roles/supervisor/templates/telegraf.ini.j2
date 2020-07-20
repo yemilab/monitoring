@@ -1,9 +1,0 @@
-[program:telegraf]
-command=/opt/slowmonitoring/telegraf/telegraf --config telegraf/telegraf.conf
-process_name=%(program_name)s
-directory=/opt/slowmonitoring
-autostart=true
-autorestart=unexpected
-user=ubuntu
-redirect_stderr=true
-stdout_logfile=/opt/slowmonitoring/log/telegraf.log
