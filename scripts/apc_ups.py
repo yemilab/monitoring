@@ -2,11 +2,11 @@ import os
 import sys
 import time
 import logging
+import json
 
 logging.basicConfig(stream=sys.stdout, format="%(asctime)s %(levelname)-8s %(message)s", level=logging.INFO)
 
 from pysnmp.hlapi import *
-from influxdb import InfluxDBClient
 
 APC_OIDS = {
   '1.3.6.1.4.1.318.1.1.1.2.1.1.0':
@@ -87,30 +87,34 @@ def fetch(host, port):
     return ret
 
 def main():
-    db = InfluxDBClient(
-             host=os.getenv('INFLUXDB_HOST', None),
-             port=int(os.getenv('INFLUXDB_PORT', None)),
-             database=os.getenv('INFLUXDB_NAME', None),
-             username=os.getenv('INFLUXDB_USER', None),
-             password=os.getenv('INFLUXDB_PASS', None),
-             ssl=True if os.getenv('INFLUXDB_VERIFYSSL', None) == 'True' else False,
-             verify_ssl= True if os.getenv('INFLUXDB_VERIFYSSL', None) == 'True' else False,
-         )
+    ipaddr = os.getenv('DEVICE_IPADDR', None)
+    port = os.getenv('DEVICE_PORT', None)
+    tag = os.getenv('DEVICE_TAG', '')
+    if len(tag) == 0:
+        logging.error('No tag error! Stop program.')
+        sys.exit(1)
     # Test device address
-    fetch(os.getenv('DEVICE_IPADDR', None), os.getenv('DEVICE_PORT', None))
+    logging.info('Test fetch data')
+    fetch(ipaddr, port)
+
+    logging.info('Start loop')
     while True:
+        logging.debug('Start monitoring')
         data = list()
         try:
             tstamp = time.time()
-            ret = fetch(os.getenv('DEVICE_IPADDR', None), int(os.getenv('DEVICE_PORT', None)))
+            ret = fetch(ipaddr, port)
             for k, v in ret.items():
                 data.append({
-                    "measurement": APC_OIDS[k]["short_name"],
-                    "tags": { "dev": os.getenv('DEVICE_TAG', '') },
-                    "fields": { "value": v },
+                    "name": APC_OIDS[k]["short_name"],
+                    "dev": tag,
+                    "value": v,
                     "time": int(tstamp),
                 })
-            db.write_points(data, time_precision="s")
+            with open(f'./data/apc_ups_{tag}.log', 'a') as fp:
+                fp.write(json.dumps(data)+'\n')
+                fp.flush()
+            logging.debug('End monitoring')
             time.sleep(5)
         except KeyboardInterrupt:
             logging.info('Good bye')
@@ -118,7 +122,7 @@ def main():
         except:
             logging.exception("Exception")
             time.sleep(5)
-        logging.info(data)
+        logging.debug(data)
 
 if __name__ == '__main__':
     main()
