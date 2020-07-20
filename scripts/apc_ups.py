@@ -1,9 +1,12 @@
+import os
 import sys
+import time
 import logging
 
 logging.basicConfig(stream=sys.stdout, format="%(asctime)s %(levelname)-8s %(message)s", level=logging.INFO)
 
 from pysnmp.hlapi import *
+from influxdb import InfluxDBClient
 
 APC_OIDS = {
   '1.3.6.1.4.1.318.1.1.1.2.1.1.0':
@@ -59,7 +62,7 @@ APC_OIDS = {
     },
 }
 
-def fetch_snmp(self, host, port):
+def fetch(host, port):
     ret = None
     objs = [ ObjectType(ObjectIdentity(ObjectIdentifier(oid))) for oid in APC_OIDS.keys() ]
     errorIndication, errorStatus, errorIndex, varBinds = next(
@@ -78,25 +81,44 @@ def fetch_snmp(self, host, port):
     else:
         ret = dict()
         for varBind in varBinds:
-            logging.info(' = '.join([x.prettyPrint() for x in varBind]))
+            logging.debug(' = '.join([x.prettyPrint() for x in varBind]))
             name, val = varBind
             ret[str(name.getOid())] = float(val)
     return ret
 
-def write(self):
-    data = list()
-    for host, dev in self.upslist:
+def main():
+    db = InfluxDBClient(
+             host=os.getenv('INFLUXDB_HOST', None),
+             port=int(os.getenv('INFLUXDB_PORT', None)),
+             database=os.getenv('INFLUXDB_NAME', None),
+             username=os.getenv('INFLUXDB_USER', None),
+             password=os.getenv('INFLUXDB_PASS', None),
+             ssl=True if os.getenv('INFLUXDB_VERIFYSSL', None) == 'True' else False,
+             verify_ssl= True if os.getenv('INFLUXDB_VERIFYSSL', None) == 'True' else False,
+         )
+    # Test device address
+    fetch(os.getenv('DEVICE_IPADDR', None), os.getenv('DEVICE_PORT', None))
+    while True:
+        data = list()
         try:
             tstamp = time.time()
-            ret = self.fetch_snmp(host, 161)
+            ret = fetch(os.getenv('DEVICE_IPADDR', None), int(os.getenv('DEVICE_PORT', None)))
             for k, v in ret.items():
                 data.append({
                     "measurement": APC_OIDS[k]["short_name"],
-                    "tags": { "dev": dev },
-                    "fields": { "value": v},
+                    "tags": { "dev": os.getenv('DEVICE_TAG', '') },
+                    "fields": { "value": v },
                     "time": int(tstamp),
                 })
+            db.write_points(data, time_precision="s")
+            time.sleep(5)
+        except KeyboardInterrupt:
+            logging.info('Good bye')
+            break
         except:
             logging.exception("Exception")
-    logging.info(data)
-    return json.dumps(data)
+            time.sleep(5)
+        logging.info(data)
+
+if __name__ == '__main__':
+    main()
