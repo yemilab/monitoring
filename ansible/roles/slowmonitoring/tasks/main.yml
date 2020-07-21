@@ -65,3 +65,21 @@
     state: started
     daemon_reload: yes
     enabled: yes
+
+- name: Install logrotate
+  dnf:
+    name: logrotate
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Install logrotate
+  apt:
+    name: logrotate
+    state: latest
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Update logroate config
+  template:
+    src: slowmonitoring.j2
+    dest: /etc/logrotate.d/slowmonitoring
+  

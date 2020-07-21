@@ -1,0 +1,7 @@
+{{ slowmonitoring['basedir'] }}/data/*.log {
+    daily
+    rotate 30
+    size 10M
+    compress
+    delaycompress
+}

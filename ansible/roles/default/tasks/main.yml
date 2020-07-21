@@ -7,21 +7,30 @@
   timezone:
     name: Asia/Seoul
 
-- name: Install chrony
+- name: Install chrony for Redhat family
   dnf:
     name: chrony
     state: latest
   when: ansible_facts['os_family'] == 'RedHat'
 
-- name: Install chrony
+- name: Install chrony for Debian family
   apt:
     name: chrony
     state: latest
   when: ansible_facts['os_family'] == 'Debian'
 
-- name: Enable and start chrony
+- name: Enable and start chrony for Redhat family
+  systemd:
+    name: chronyd
+    state: started
+    daemon_reload: yes
+    enabled: yes
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Enable and start chrony for Debian family
   systemd:
     name: chrony
     state: started
     daemon_reload: yes
     enabled: yes
+  when: ansible_facts['os_family'] == 'Debian'
