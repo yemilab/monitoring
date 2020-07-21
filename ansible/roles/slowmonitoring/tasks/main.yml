@@ -12,7 +12,7 @@
 
 - name: Create virtural environment
   pip:
-    requirements: "{{ slowmonitoring['basedir'] }}/scripts/requirements-{{ venvtype }}.txt"
+    requirements: "{{ slowmonitoring['basedir'] }}/scripts/requirements-{{ slowmonitoring['venvtype'] }}.txt"
     virtualenv: "{{ slowmonitoring['basedir'] }}/venv"
 
 - name: Download Telegraf
@@ -41,6 +41,7 @@
     src: /tmp/{{ telegraf[ansible_facts['architecture']]['fname'] }}/{{ telegraf[ansible_facts['architecture']]['fpath'] }}
     dest: "{{ slowmonitoring['basedir'] }}/telegraf/"
     remote_src: yes
+    mode: 0755
   when: telegraf['update'] == 'yes'
 
 - name: Install Supervisor
