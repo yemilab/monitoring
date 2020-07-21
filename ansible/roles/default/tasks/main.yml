@@ -1,0 +1,27 @@
+---
+- name: Set hostname
+  hostname:
+    name: "{{ hostname }}"
+
+- name: Set timezone
+  timezone:
+    name: Asia/Seoul
+
+- name: Install chrony
+  dnf:
+    name: chrony
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Install chrony
+  apt:
+    name: chrony
+    state: latest
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Enable and start chrony
+  systemd:
+    name: chrony
+    state: started
+    daemon_reload: yes
+    enabled: yes

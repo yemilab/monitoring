@@ -1,3 +1,4 @@
+---
 - name: Install Git
   dnf:
     name: git
