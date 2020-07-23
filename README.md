@@ -63,7 +63,7 @@ References:
 
         type ~\.ssh\id_rsa.pub
 
-## Tutorial for Linux Command Line Interface (CLI)
+## Linux Command Line Interface (CLI) Tutorial
 
 [Tutorial](https://cupibs.sharepoint.com/:p:/s/Y2L/EVmNektTj_pPsZkSf8xCudYBC7SUh1nj6Zbccr2lVI7fAQ?e=2Ze5lu) (Korean)
 
