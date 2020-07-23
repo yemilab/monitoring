@@ -29,7 +29,9 @@ References:
 
 ### Initial use of SSH
 
-Follow [this](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse#initial-use-of-ssh) instruction.
+1. Launch PowerShell using [Windows Terminal](https://github.com/microsoft/terminal).
+
+2. Follow [this](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse#initial-use-of-ssh) instruction.
 
 > Once you have installed the OpenSSH Server on Windows, you can quickly test it using PowerShell from any Windows device with the SSH Client installed. In PowerShell type the following command:
 >
