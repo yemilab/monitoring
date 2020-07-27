@@ -101,3 +101,17 @@ python3 -m venv venv
 
 ## Directory structure
 
+- `ansible`
+- `data`
+- `log`
+- `doc`
+- `scripts`
+- `supervisor`
+- `telegraf`
+
+## Run supervisorctl
+
+```
+sudo .../venv/bin/supervisorctl -c .../supervisor/supervisor.conf
+```
+
