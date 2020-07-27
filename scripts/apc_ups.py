@@ -99,7 +99,7 @@ def main():
 
     logging.info('Start loop')
     while True:
-        logging.debug('Start monitoring')
+        logging.info('Start monitoring')
         data = list()
         try:
             tstamp = time.time()
@@ -114,7 +114,7 @@ def main():
             with open(f'./data/apc_ups_{tag}.log', 'a') as fp:
                 fp.write(json.dumps(data)+'\n')
                 fp.flush()
-            logging.debug('End monitoring')
+            logging.info('End monitoring')
             time.sleep(5)
         except KeyboardInterrupt:
             logging.info('Good bye')
@@ -122,7 +122,6 @@ def main():
         except:
             logging.exception("Exception")
             time.sleep(5)
-        logging.debug(data)
 
 if __name__ == '__main__':
     main()
