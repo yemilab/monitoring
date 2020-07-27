@@ -138,7 +138,7 @@ def main():
                     logging.warning("Unexpected value: {} is {}".format(k,v))
                     continue
                 data.append({
-                    "measurement": ETUS_OIDS[k]["short_name"],
+                    "name": ETUS_OIDS[k]["short_name"],
                     "dev": tag,
                     "value": v,
                     "time": tstamp,
