@@ -22,7 +22,7 @@ def fetch(host, port):
 
 def main():
     ipaddr = os.getenv('DEVICE_IPADDR', None)
-    port = os.getenv('DEVICE_PORT', None)
+    port = int(os.getenv('DEVICE_PORT', None))
     tag = os.getenv('DEVICE_TAG', '')
     if len(tag) == 0:
         logging.error('No tag error! Stop program.')
@@ -38,24 +38,24 @@ def main():
         try:
             tstamp = int(time.time())
             igbt1, igbt2 = fetch(ipaddr, port)
-            data = json.dumps([{
+            data = [{
                 "name": "invert_temp",
                 "dev": tag,
-                "fields": { "IGBT1": igbt1, "IGBT2": igbt2 },
+                "IGBT1": igbt1,
+                "IGBT2": igbt2,
                 "time": tstamp
-            }])
+            }]
             with open(f'./data/etus_ups_temp_{tag}.log', 'a') as fp:
                 fp.write(json.dumps(data)+'\n')
                 fp.flush()
             logging.debug('End monitoring')
-            time.sleep(5)
+            time.sleep(60)
         except KeyboardInterrupt:
             logging.info('Good bye')
             break
         except:
             logging.exception("Exception")
-            time.sleep(5)
-        logging.debug(data)
+            time.sleep(60)
 
 if __name__ == "__main__":
     main()
