@@ -5,6 +5,7 @@ import json
 import logging
 import datetime
 
+from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 
@@ -16,7 +17,7 @@ def fetch(host, port):
         # Read V12, V23, V31, A1, A2, A3, W, pf, var, Hz, Wh_High, Wh_Low
         # varh_High, varh_Low, V1, V2, V3, W1, W2, W3, VA1, VA2, VA3, VA
         rr = client.read_input_registers(0x00, 31, unit=0xFF)
-        decoder = BinaryPayloadDecoder.fromRegisters(rr.registers)
+        decoder = BinaryPayloadDecoder.fromRegisters(rr.registers, byteorder=Endian.Big)
         i3v = [ float(decoder.decode_16bit_int())/10.0 for _ in range(3) ]
         i3i = [ float(decoder.decode_16bit_int())/1000.0 for _ in range(3) ]
         W = float(decoder.decode_16bit_int())
@@ -36,7 +37,7 @@ def fetch(host, port):
         VA = float(decoder.decode_16bit_int())
         # Read maxV(R,S,T), maxVV(R,S,T), maxI(R,S,T), maxW, maxHz, temperatures
         rr = client.read_input_registers(0x27, 15, unit=0xFF)
-        decoder = BinaryPayloadDecoder.fromRegisters(rr.registers)
+        decoder = BinaryPayloadDecoder.fromRegisters(rr.registers, byteorder=Endian.Big)
         maxV = [ float(decoder.decode_16bit_int())/10.0 for _ in range(3) ]
         maxVV = [ float(decoder.decode_16bit_int())/10.0 for _ in range(3) ]
         maxI = [ float(decoder.decode_16bit_int())/1000.0 for _ in range(3) ]
@@ -44,39 +45,39 @@ def fetch(host, port):
         maxHz = float(decoder.decode_16bit_int())
         max_temp = [ float(decoder.decode_16bit_int()) for _ in range(2) ]
         temp = [ float(decoder.decode_16bit_int()) for _ in range(2) ]
-    ret = {
-        "In3V1": i3v[0],
-        "In3V2": i3v[1],
-        "In3V3": i3v[2],
-        "In3I1": i3i[0],
-        "In3I2": i3i[1],
-        "In3I3": i3i[2],
-        "In2V1": i2v[0],
-        "In2V2": i2v[1],
-        "In2V3": i2v[2],
-        "W": W,
-        "Hz": Hz,
-        "W1": W123[0],
-        "W2": W123[1],
-        "W3": W123[2],
-        "VA1": VA123[0],
-        "VA2": VA123[1],
-        "VA3": VA123[2],
-        "VA": VA,
-        "maxV_R": maxV[0],
-        "maxV_S": maxV[1],
-        "maxV_T": maxV[2],
-        "maxVV_R": maxVV[0],
-        "maxVV_S": maxVV[1],
-        "maxVV_T": maxVV[2],
-        "maxI_R": maxI[0],
-        "maxI_S": maxI[1],
-        "maxI_T": maxI[2],
-        "maxW": maxW,
-        "maxHz": maxHz,
-        "Temp1": temp[0],
-        "Temp2": temp[1],
-    }
+        ret = {
+            "In3V1": i3v[0],
+            "In3V2": i3v[1],
+            "In3V3": i3v[2],
+            "In3I1": i3i[0],
+            "In3I2": i3i[1],
+            "In3I3": i3i[2],
+            "In2V1": i2v[0],
+            "In2V2": i2v[1],
+            "In2V3": i2v[2],
+            "W": W,
+            "Hz": Hz,
+            "W1": W123[0],
+            "W2": W123[1],
+            "W3": W123[2],
+            "VA1": VA123[0],
+            "VA2": VA123[1],
+            "VA3": VA123[2],
+            "VA": VA,
+            "maxV_R": maxV[0],
+            "maxV_S": maxV[1],
+            "maxV_T": maxV[2],
+            "maxVV_R": maxVV[0],
+            "maxVV_S": maxVV[1],
+            "maxVV_T": maxVV[2],
+            "maxI_R": maxI[0],
+            "maxI_S": maxI[1],
+            "maxI_T": maxI[2],
+            "maxW": maxW,
+            "maxHz": maxHz,
+            "Temp1": temp[0],
+            "Temp2": temp[1],
+        }
     return ret
 
 def main():
