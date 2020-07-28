@@ -43,7 +43,7 @@ def main():
                     'temp': float(temp),
                     'time': tstamp,
                 }
-            with open(f'./data/radionode-UA52-{tag}.log','a') as fp:
+            with open(f'./data/radionode_UA52_{tag}.log','a') as fp:
                 fp.write(json.dumps(data)+'\n')
                 fp.flush()
             logging.info('End monitoring')
