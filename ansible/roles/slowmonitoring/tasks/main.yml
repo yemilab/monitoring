@@ -66,6 +66,12 @@
     daemon_reload: yes
     enabled: yes
 
+- name: Create run-supervisorctl.sh
+  template:
+    src: run-supervisorctl.sh.j2
+    dest: "{{ slowmonitoring['basedir'] }}/run-supervisorctl.sh"
+    mode: "0755"
+
 - name: Install logrotate
   dnf:
     name: logrotate
@@ -82,4 +88,3 @@
   template:
     src: slowmonitoring.j2
     dest: /etc/logrotate.d/slowmonitoring
-  
