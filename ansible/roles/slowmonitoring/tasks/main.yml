@@ -19,7 +19,7 @@
   get_url:
     url: https://dl.influxdata.com/telegraf/releases/{{ telegraf[ansible_facts['architecture']]['fname'] }}.tar.gz
     dest: /tmp
-    mode: 0644
+    mode: "0644"
   when: telegraf['update'] == 'yes'
 
 - name: Create /tmp/telegraf
@@ -41,7 +41,7 @@
     src: /tmp/{{ telegraf[ansible_facts['architecture']]['fname'] }}/{{ telegraf[ansible_facts['architecture']]['fpath'] }}
     dest: "{{ slowmonitoring['basedir'] }}/telegraf/"
     remote_src: yes
-    mode: 0755
+    mode: "0755"
   when: telegraf['update'] == 'yes'
 
 - name: Install Supervisor
