@@ -27,7 +27,7 @@ def fetch(host, port):
         return None
     else:
         raw = line.split(",")
-    data = { "time": int(time.time()) }
+    data = dict()
     Sinput, Scontrol = raw[0][2:].split("-")
     data["Sinput"] = int(Sinput)
     data["Scontrol"] = 1 if Scontrol == "ON" else 0
@@ -54,21 +54,23 @@ def main():
     logging.info('Start loop')
     while True:
         logging.info('Start monitoring')
-        data = list()
         try:
             tstamp = int(time.time())
             fields = fetch(ipaddr, port)
             if fields == None:
                 time.sleep(5)
                 continue
-            data.append({
-                'name': 'n2gen',
-                'dev': tag,
-                'time': tstamp,
-                **fields,
-            })
             with open(f'./data/n2gen_{tag}.log','a') as fp:
-                fp.write(json.dumps(data)+'\n')
+                lst_fields = list()
+                for k, v in fields.items():
+                    if isinstance(v, int):
+                        lst_fields.append(f'{k}={v}i')
+                    elif isinstance(v, float):
+                        lst_fields.append(f'{k}={v}')
+                    else:
+                        lst_fields.append(f'{k}="{v}"')
+                line_fields = ','.join(lst_fields)
+                fp.write(f'n2gen,dev={tag} {line_fields} {tstamp*(10**9)}\n')
                 fp.flush()
             logging.info('End monitoring')
             time.sleep(60)
