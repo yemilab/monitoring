@@ -25,21 +25,14 @@ def main():
     while True:
         logging.info('Start monitoring')
         try:
-            data = list()
             tstamp = int(time.time())
             with ModbusClient(ipaddr, port=port) as client:
                 # Read fire alarm status
                 rr = client.read_holding_registers(0, 1, unit=1)
                 status = 0 if rr.registers[0] == 0 else 1
-                data.append({
-                    'name': 'fire',
-                    'pos': 'a5',
-                    'status': status,
-                    'time': tstamp,
-                })
-            with open(f'./data/fire_{tag}.log','a') as fp:
-                fp.write(json.dumps(data)+'\n')
-                fp.flush()
+                with open(f'./data/fire_{tag}.log','a') as fp:
+                    fp.write(f'fire,pos={tag} status={status}i {tstamp*(10**9)}\n')
+                    fp.flush()
             logging.info('End monitoring')
             time.sleep(5)            
         except KeyboardInterrupt:
