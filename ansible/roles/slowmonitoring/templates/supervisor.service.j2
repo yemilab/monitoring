@@ -2,6 +2,7 @@
 # by ET-CS (https://github.com/ET-CS)
 [Unit]
 Description=Supervisor daemon
+After=network.target chronyd.service
 
 [Service]
 Type=forking
