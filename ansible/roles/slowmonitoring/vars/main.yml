@@ -8,4 +8,7 @@ telegraf:
   aarch64:
     fname: telegraf-1.14.5_linux_arm64
     fpath: 'telegraf/usr/bin/telegraf'
+  armv7l:
+    fname: 'telegraf-1.14.5_linux_armhf'
+    fpath: 'telegraf/usr/bin/telegraf'
   update: 'yes'
