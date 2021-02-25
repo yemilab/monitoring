@@ -120,7 +120,7 @@ def main():
                 "time": tstamp,
                 **d,
             })
-        with open(f'./data/rad7_{tag}.log','w') as fp:
+        with open(f'./data/rad7-telnet_{tag}.log','w') as fp:
             fp.write(json.dumps(data)+'\n')
             fp.flush()
         logging.info('End monitoring')
