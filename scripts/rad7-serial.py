@@ -102,7 +102,7 @@ def fetch():
 def main():
     while True:
         try:
-            with open('./data/rad7.dat', 'w') as fp:
+            with open('./data/rad7.log', 'w') as fp:
                 data = fetch()
                 fp.write(json.dumps(data)+'\n')
                 fp.flush()
