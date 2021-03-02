@@ -27,7 +27,7 @@ def main():
         data = []
         try:
             tstamp = int(time.time())
-            client = ModbusClient(method='rtu', port=SERIALPORT, baudrate=9600, bytesize=8, parity='N', stopbit=2)
+            client = ModbusClient(method='rtu', port=dev, baudrate=9600, bytesize=8, parity='N', stopbit=2)
             client.connect()
             r = client.read_holding_registers(0, 2, unit=247)
             data = struct.pack('>HH', r.registers[0], r.registers[1])
@@ -51,7 +51,6 @@ def main():
         except:
             logging.exception('Exception')
             time.sleep(5)
-
 
 if __name__ == '__main__':
     main()
