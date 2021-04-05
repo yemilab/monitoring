@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 import re
@@ -8,7 +9,6 @@ logging.basicConfig(stream=sys.stdout, format='%(asctime)s %(levelname)-8s %(mes
 
 import serial
 
-DEV='/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AI03B0BV-if00-port0'
 BUFSIZE=1024000
 
 def read_until_prompt(ser):
@@ -46,10 +46,7 @@ def parse_data(data):
             t = time.strptime(' '.join(d[1:6]), '%y %m %d %H %M')
             tstamp = int(time.mktime(t))
             output = {
-                'name': 'rad7',
-                'dev': '4331',
                 'time': tstamp,
-
                 'recnum': int(d[0]),
                 'totc': float(d[6]),
                 'livet': float(d[7]),
@@ -69,17 +66,15 @@ def parse_data(data):
                 'radon_uncert': float(d[21]),
                 'unit': int(d[22]),
             }
-            ret.append(output)
+            ret.append((tstamp, output))
+            logging.debug((tstamp, output))
         except IndexError:
             logging.exception('Line parsing failed')
             continue
-        except ValueError:
-            logging.exception('Value parsing failed')
-            continue
     return ret
 
-def fetch():
-    with serial.Serial(DEV, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10) as ser:
+def fetch(dev):
+    with serial.Serial(dev, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10) as ser:
         logging.info('Send ETX')
         ser.write(b'\x03\r\n')
         res = read_until_prompt(ser)
@@ -90,6 +85,7 @@ def fetch():
         ser.write(b'Special Status\r\n')
         res = read_until_prompt(ser)
         runnum = parse_runnum(res)
+        logging.debug(f'Run number is {runnum}')
 
         logging.info(f'Send Data Com {runnum:02d}')
         ser.write(f'Data Com {runnum:2d}\r\n'.encode('ascii'))
@@ -100,15 +96,35 @@ def fetch():
         return ret
 
 def main():
+    dev = os.getenv('DEVICE', None)
+    tag = os.getenv('DEVICE_TAG', '')
+    sn = os.getenv('DEVICE_SN', '')
+    if len(tag) == 0 or len(sn) == 0:
+        logging.error('No tag or sn error! Stop program.')
+        sys.exit(1)
+    logging.info('Start loop')
     while True:
         try:
-            with open('./data/rad7.log', 'w') as fp:
-                data = fetch()
+            ret = fetch(dev)
+            data = list()
+            for tstamp, d in ret:
+                data.append({
+                    'name': 'rad7',
+                    'dev': sn,
+                    'pos': tag,
+                    'time': tstamp,
+                    **d,
+                })
+            with open(f'./data/rad7-serial_{tag}.log', 'w') as fp:
                 fp.write(json.dumps(data)+'\n')
                 fp.flush()
             time.sleep(600)
+        except ValueError:
+            logging.exception('Parsing failed. Retry after 5 secs...')
+            time.sleep(5)
         except KeyboardInterrupt:
             logging.info('Good bye')
+            break
         except:
             logging.exception('Exception: ')
             time.sleep(600)
