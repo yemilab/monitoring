@@ -1,20 +1,21 @@
+# TODO: It is unfinished code
+#
 import os
 import sys
 import time
 import re
 import logging
 import json
+import socket
 
 logging.basicConfig(stream=sys.stdout, format='%(asctime)s %(levelname)-8s %(message)s', level=logging.DEBUG)
 
-import serial
+BUFSIZE = 1024
 
-BUFSIZE=1024000
-
-def read_until_prompt(ser):
+def read_until_prompt(sock):
     data = bytearray(BUFSIZE)
     for i in range(BUFSIZE):
-        b = ser.read()
+        b = sock.recv(BUFSIZE)
         if len(b) > 0:
             data[i] = b[0]
             if i >= 2:
@@ -35,7 +36,6 @@ def parse_runnum(data):
     return runnum
 
 def parse_data(data):
-    logging.debug(data)
     dlst = list()
     for line in data.split('\r\n'):
         d = [ l.strip() for l in line.split(',') ]
@@ -67,37 +67,37 @@ def parse_data(data):
                 'radon_uncert': float(d[21]),
                 'unit': int(d[22]),
             }
-            ret.append((tstamp, output))
-            logging.debug((tstamp, output))
+            ret.append(output)
         except IndexError:
             logging.exception('Line parsing failed')
             continue
+        except ValueError:
+            logging.exception('Value parsing failed')
+            continue
     return ret
 
-def fetch(dev):
-    with serial.Serial(dev, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10) as ser:
+def fetch(ipaddr, port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((ipaddr, port))
         logging.info('Send ETX')
-        ser.write(b'\x03\r\n')
-        res = read_until_prompt(ser)
-        ser.write(b'\x03\r\n')
-        res = read_until_prompt(ser)
-
+        s.sendall(b'\x03\r\n')
+        res = read_until_prompt(s)
+        s.sendall(b'\x03\r\n')
+        res = read_until_prompt(s)
         logging.info('Send Special Status')
-        ser.write(b'Special Status\r\n')
-        res = read_until_prompt(ser)
+        s.sendall(b'Special Status\r\n')
+        res = read_until_prompt(s)
         runnum = parse_runnum(res)
-        logging.debug(f'Run number is {runnum}')
-
         logging.info(f'Send Data Com {runnum:02d}')
-        ser.write(f'Data Com {runnum:2d}\r\n'.encode('ascii'))
-        res = read_until_prompt(ser)
+        s.sendall(f'Data Com {runnum:2d}\r\n'.encode('ascii'))
+        res = read_until_prompt(s)
         logging.info('Parse data')
         ret = parse_data(res)
-        
-        return ret
+    return ret
 
 def main():
-    dev = os.getenv('DEVICE', None)
+    ipaddr = os.getenv('DEVICE_IPADDR', None)
+    port = int(os.getenv('DEVICE_PORT', None))
     tag = os.getenv('DEVICE_TAG', '')
     sn = os.getenv('DEVICE_SN', '')
     if len(tag) == 0 or len(sn) == 0:
@@ -105,8 +105,25 @@ def main():
         sys.exit(1)
     logging.info('Start loop')
     while True:
+        ret = list()
+        for _ in range(5): # try 5 times
+            try:
+                ret = fetch(ipaddr, port)
+            except OSError:
+                logging.error(f'{ipaddr}:{port} connection failed.')
+                break
+            except ValueError:
+                logging.exception('Parsing failed. Retry after 5 secs...')
+                time.sleep(5)
+                continue
+            except KeyboardInterrupt:
+                logging.info('Good bye')
+                break
+            except:
+                logging.exception('Exception')
+                time.sleep(60)
+            break
         try:
-            ret = fetch(dev)
             data = list()
             for tstamp, d in ret:
                 data.append({
@@ -116,13 +133,10 @@ def main():
                     'time': tstamp,
                     **d,
                 })
-            with open(f'./data/rad7-serial_{tag}.log', 'w') as fp:
+            with open(f'./data/rad7-socket_{tag}.log', 'w') as fp:
                 fp.write(json.dumps(data)+'\n')
                 fp.flush()
-            time.sleep(600)
-        except ValueError:
-            logging.exception('Parsing failed. Retry after 5 secs...')
-            time.sleep(5)
+                time.sleep(600)
         except KeyboardInterrupt:
             logging.info('Good bye')
             break
