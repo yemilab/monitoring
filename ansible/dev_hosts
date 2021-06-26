@@ -1,0 +1,3 @@
+[dev]
+dev01 ansible_user=pi ansible_python_interpreter=/usr/bin/python3 hostname=dev01
+dev02 ansible_user=pi ansible_python_interpreter=/usr/bin/python3 hostname=dev02
