@@ -1,0 +1,10 @@
+[program:rad7-serial_{{ rad7['tag'] }}]
+command={{ slowmonitoring['basedir'] }}/venv/bin/python scripts/rad7-serial.py
+process_name=%(program_name)s
+directory={{ slowmonitoring['basedir'] }}
+autostart=true
+autorestart=unexpected
+user=root
+redirect_stderr=true
+stdout_logfile={{ slowmonitoring['basedir'] }}/log/rad7-serial_{{ rad7['tag'] }}.log
+environment = DEVICE="{{ rad7['dev'] }}",DEVICE_TAG="{{ rad7['tag'] }}",DEVICE_SN="{{ rad7['sn'] }}"

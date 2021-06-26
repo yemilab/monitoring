@@ -1,0 +1,10 @@
+[program:etusupstemp]
+command={{ slowmonitoring['basedir'] }}/venv/bin/python scripts/etus_ups_temperature.py
+process_name=%(program_name)s
+directory={{ slowmonitoring['basedir'] }}
+autostart=true
+autorestart=unexpected
+user=root
+redirect_stderr=true
+stdout_logfile={{ slowmonitoring['basedir'] }}/log/etusupstemp.log
+environment = DEVICE_IPADDR="{{ etusups['ip'] }}",DEVICE_PORT="{{ etusups['port'] }}",DEVICE_TAG="{{ etusups['tag'] }}"

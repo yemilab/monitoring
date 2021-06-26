@@ -1,0 +1,10 @@
+[program:pcw_{{ pcw['tag'] }}]
+command={{ slowmonitoring['basedir'] }}/venv/bin/python scripts/pcw.py
+process_name=%(program_name)s
+directory={{ slowmonitoring['basedir'] }}
+autostart=true
+autorestart=unexpected
+user=root
+redirect_stderr=true
+stdout_logfile={{ slowmonitoring['basedir'] }}/log/pcw_{{ pcw['tag'] }}.log
+environment = DEVICE_IPADDR="{{ pcw['ip'] }}",DEVICE_PORT="{{ pcw['port'] }}",DEVICE_TAG="{{ pcw['tag'] }}"

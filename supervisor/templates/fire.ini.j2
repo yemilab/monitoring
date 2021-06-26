@@ -1,0 +1,10 @@
+[program:fire_{{ fire['tag'] }}]
+command={{ slowmonitoring['basedir'] }}/venv/bin/python scripts/fire.py
+process_name=%(program_name)s
+directory={{ slowmonitoring['basedir'] }}
+autostart=true
+autorestart=unexpected
+user=root
+redirect_stderr=true
+stdout_logfile={{ slowmonitoring['basedir'] }}/log/fire_{{ fire['tag'] }}.log
+environment = DEVICE_IPADDR="{{ fire['ip'] }}",DEVICE_PORT="{{ fire['port'] }}",DEVICE_TAG="{{ fire['tag'] }}"

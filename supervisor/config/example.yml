@@ -1,0 +1,134 @@
+---
+global_vars:
+  slowmonitoring:
+    basedir: /opt/slowmonitoring
+
+services:
+  - name: Yemilab Radinode RH sensor
+    template:
+      src: radionode_UA10.ini.j2
+      dest: radionode_UA10_yemilab01.ini
+    vars:
+      radionode:
+        tag: yemilab01
+        dev: 
+  - name: Yemilab Radinode O2 sensor
+    template:
+      src: radionode_UA52.ini.j2
+      dest: radionode_UA52_yemilab01.ini
+    vars:
+      radionode:
+        tag: yemilab01
+        dev:
+  - name: Yemilab RAD7 -75ML
+    template:
+      src: rad7-serial.ini.j2
+      dest: rad7-serial_YM-75ML.ini
+    vars:
+      rad7:
+        tag: YM-75ML
+        dev: 
+        sn: 
+  - name: Ground office UPS (APC)
+    template:
+      src: apcups.ini.j2
+      dest: apcups_y2o.ini
+    vars:
+      apcups:
+        tag: Y2OUPS
+        ip: 
+        port: 
+  - name: AVR A6
+    template:
+      src: avr.ini.j2
+      dest: avr_a6.ini
+    vars:
+      avr:
+        tag: a6
+        ip: 
+        port: 
+  - name: Fire alert A5
+    template:
+      src: fire.ini.j2
+      dest: fire_a5.ini
+    vars:
+      fire:
+        tag: a5
+        ip: 
+        port: 
+  - name: Leakage alert A5
+    template:
+      src: leak.ini.j2
+      dest: leak_a5amore.ini
+    vars:
+      leak:
+        tag: a5amore
+        ip: 
+        port: 
+  - name: A6 HPGe PureAire Oxygen sensor
+    template:
+      src: pureaire_o2.ini.j2
+      dest: pureaire_o2_a6hpge.ini
+    vars:
+      pureaire:
+        tag: 
+        sn: 
+        dev: 
+  - name: A6 detector room Lustron sensor (tag=a5ups)
+    template:
+      src: lutron.ini.j2
+      dest: lutron_a5ups.ini
+    vars:
+      lutron:
+        tag: a5ups
+        ip: 
+        port: 
+        type: th
+
+  - name: A6 CC2 LN2 generator
+    template:
+      src: n2gen.ini.j2
+      dest: n2gen_a6cc2.ini
+    vars:
+      n2gen:
+        tag: a6cc2
+        ip: 
+        port: 
+  - name: A5 PCW AMoRE
+    template:
+      src: pcw.ini.j2
+      dest: pcw_lt.ini
+    vars:
+      pcw:
+        tag: lt
+        ip: 
+        port: 
+  - name: RAD7 A5COSINE
+    template:
+      src: rad7.ini.j2
+      dest: rad7_A5COSINE.ini
+    vars:
+      rad7:
+        tag: A5COSINE
+        ip: 
+        port: 
+        sn: 
+  - name: Voegtlin gasflow meter
+    template:
+      src: voegtlin_gasflow.ini.j2
+      dest: voegtlin_gasflow_a5hpge.ini
+    vars:
+      gasflow:
+        dev: 
+        tag: 
+        type:
+  - name: Telegraf Power Monitoring
+    template:
+      src: telegraf_power.ini.j2
+      dest: telegraf_power.ini
+    vars:
+      db:
+        url: 
+        name: 
+        user: 
+        pass: 

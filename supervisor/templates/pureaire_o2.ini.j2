@@ -1,0 +1,10 @@
+[program:pureaire_o2_{{ pureaire['tag'] }}]
+command={{ slowmonitoring['basedir'] }}/venv/bin/python scripts/pureaire_o2.py
+process_name=%(program_name)s
+directory={{ slowmonitoring['basedir'] }}
+autostart=true
+autorestart=unexpected
+user=root
+redirect_stderr=true
+stdout_logfile={{ slowmonitoring['basedir'] }}/log/pureaire_o2_{{ pureaire['tag'] }}.log
+environment = DEVICE="{{ pureaire['dev'] }}",DEVICE_TAG="{{ pureaire['tag'] }}",DEVICE_SN="{{ pureaire['sn'] }}"

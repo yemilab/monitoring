@@ -1,0 +1,10 @@
+[program:lutron_{{ lutron['tag'] }}]
+command={{ slowmonitoring['basedir'] }}/venv/bin/python scripts/lutron.py
+process_name=%(program_name)s
+directory={{ slowmonitoring['basedir'] }}
+autostart=true
+autorestart=unexpected
+user=root
+redirect_stderr=true
+stdout_logfile={{ slowmonitoring['basedir'] }}/log/lutron_{{ lutron['tag'] }}.log
+environment = DEVICE_IPADDR="{{ lutron['ip'] }}",DEVICE_PORT="{{ lutron['port'] }}",DEVICE_TAG="{{ lutron['tag'] }}", DEVICE_TYPE="{{ lutron['type'] }}"

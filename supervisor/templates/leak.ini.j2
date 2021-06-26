@@ -1,0 +1,10 @@
+[program:leak_{{ leak['tag'] }}]
+command={{ slowmonitoring['basedir'] }}/venv/bin/python scripts/leak.py
+process_name=%(program_name)s
+directory={{ slowmonitoring['basedir'] }}
+autostart=true
+autorestart=unexpected
+user=root
+redirect_stderr=true
+stdout_logfile={{ slowmonitoring['basedir'] }}/log/leak_{{ leak['tag'] }}.log
+environment = DEVICE_IPADDR="{{ leak['ip'] }}",DEVICE_PORT="{{ leak['port'] }}",DEVICE_TAG="{{ leak['tag'] }}"

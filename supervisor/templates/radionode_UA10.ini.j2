@@ -1,0 +1,10 @@
+[program:radionode_UA10_{{ radionode['tag'] }}]
+command={{ slowmonitoring['basedir'] }}/venv/bin/python scripts/radionode_UA10.py
+process_name=%(program_name)s
+directory={{ slowmonitoring['basedir'] }}
+autostart=true
+autorestart=unexpected
+user=root
+redirect_stderr=true
+stdout_logfile={{ slowmonitoring['basedir'] }}/log/radionode_UA10_{{ radionode['tag'] }}.log
+environment = DEVICE="{{ radionode['dev'] }}",DEVICE_TAG="{{ radionode['tag'] }}"

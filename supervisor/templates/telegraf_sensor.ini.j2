@@ -1,0 +1,10 @@
+[program:telegraf_sensor]
+command={{ slowmonitoring['basedir'] }}/telegraf/telegraf --config {{ slowmonitoring['basedir'] }}/telegraf/sensor.conf
+process_name=%(program_name)s
+directory={{ slowmonitoring['basedir'] }}
+autostart=true
+autorestart=unexpected
+user=root
+redirect_stderr=true
+stdout_logfile={{ slowmonitoring['basedir'] }}/log/telegraf_sensor.log
+environment = BASEURL="{{ slowmonitoring['basedir'] }}",INFLUX_URL="{{ db['url'] }}",INFLUX_NAME="{{ db['name'] }}",INFLUX_USER="{{ db['user'] }}",INFLUX_PASS="{{ db['pass'] }}"
