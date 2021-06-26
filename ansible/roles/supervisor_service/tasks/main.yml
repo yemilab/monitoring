@@ -11,10 +11,12 @@
 
 - name: Copy available service
   copy:
-    src: "../supervisor/available/*.ini"
+    src: "{{ item }}"
     dest: "{{ slowmonitoring['basedir'] }}/supervisor/available/"
     owner: root
     group: root
+  with_fileglob:
+    - "../supervisor/available/*.ini"
 
 - name: Install services
   file:
