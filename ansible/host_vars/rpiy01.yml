@@ -1,4 +1,5 @@
 services:
   - radionode_UA10_YM-35ML
   - radionode_UA52_YM-35ML
+  - rad7-serial_YM-35ML
   - telegraf_ym_sensor
