@@ -1,3 +1,4 @@
 services:
-  - radionode_UA10_yemilab01
-  - radionode_UA52_yemilab01
+  - radionode_UA10_YM-35ML
+  - radionode_UA52_YM-35ML
+  - telegraf_ym_sensor
