@@ -1,0 +1,11 @@
+---
+- name: Clone slowmonitoring project
+  git:
+    repo: "{{ slowmonitoring['gitrepo'] }}"
+    dest: "{{ slowmonitoring['basedir'] }}"
+    update: yes
+
+- name: Create virtural environment
+  pip:
+    requirements: "{{ slowmonitoring['basedir'] }}/scripts/requirements-{{ slowmonitoring['venvtype'] }}.txt"
+    virtualenv: "{{ slowmonitoring['basedir'] }}/venv"

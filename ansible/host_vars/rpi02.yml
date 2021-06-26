@@ -1,0 +1,3 @@
+services:
+  - pureaire_o2_a5amore
+  - telegraf_sensor

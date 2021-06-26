@@ -1,0 +1,51 @@
+---
+- name: Clone slowmonitoring project
+  git:
+    repo: "{{ slowmonitoring['gitrepo'] }}"
+    dest: "{{ slowmonitoring['basedir'] }}"
+    update: yes
+
+- name: Create virtural environment
+  pip:
+    requirements: "{{ slowmonitoring['basedir'] }}/scripts/requirements-{{ slowmonitoring['venvtype'] }}.txt"
+    virtualenv: "{{ slowmonitoring['basedir'] }}/venv"
+
+- name: Find enabled service
+  find:
+    paths: "{{ slowmonitoring['basedir'] }}/supervisor/enabled/"
+    patterns: "*.ini"
+    file_type: any
+  register: enabled_services
+  when: cleanup_services|bool
+
+- name: Remove enalbed service
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ enabled_services.files }}"
+  when: cleanup_services|bool
+
+- name: Find available service
+  find:
+    paths: "{{ slowmonitoring['basedir'] }}/supervisor/available/"
+    patterns: "*.ini"
+    file_type: any
+  register: available_services
+  when: cleanup_services|bool
+
+- name: Remove available service
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ available_services.files }}"
+  when: cleanup_services|bool
+
+- name: Install services
+  file:
+    src: "{{ slowmonitoring['basedir'] }}/supervisor/available/{{ item }}.ini"
+    dest: "{{ slowmonitoring['basedir'] }}/supervisor/enabled/{{ item }}.ini"
+    state: link
+    owner: root
+    group: root
+  with_items: "{{ services }}"
+  when: services is defined

@@ -1,0 +1,45 @@
+---
+- name: Install Supervisor
+  pip:
+    name: supervisor
+    virtualenv: "{{ slowmonitoring['basedir'] }}/venv"
+
+- name: Register Supervisor to systemd
+  template:
+    src: supervisor.service.j2
+    dest: /etc/systemd/system/supervisor.service
+
+- name: Create supervisor.conf
+  template:
+    src: supervisor.conf.j2
+    dest: "{{ slowmonitoring['basedir'] }}/supervisor/supervisor.conf"
+
+- name: Enable and start Supervisor
+  systemd:
+    name: supervisor
+    state: started
+    daemon_reload: yes
+    enabled: yes
+
+- name: Create run-supervisorctl.sh
+  template:
+    src: run-supervisorctl.sh.j2
+    dest: "{{ slowmonitoring['basedir'] }}/run-supervisorctl.sh"
+    mode: "0755"
+
+- name: Install logrotate
+  dnf:
+    name: logrotate
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Install logrotate
+  apt:
+    name: logrotate
+    state: latest
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Update logroate config
+  template:
+    src: slowmonitoring.j2
+    dest: /etc/logrotate.d/slowmonitoring

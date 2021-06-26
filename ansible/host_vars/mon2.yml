@@ -1,0 +1,12 @@
+services:
+  - apcups_a6
+  - avr_a6
+  - lutron_a5ups
+  - lutron_a6hpge
+  - lutron_a61f
+  - n2gen_a6cc2
+  - n2gen_a6cc1
+  - telegraf_power
+  - telegraf_sensor5s
+  - telegraf_sensor
+  - telegraf_computer

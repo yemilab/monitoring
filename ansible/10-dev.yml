@@ -7,4 +7,6 @@
   roles:
     - default
     - basic
-    - slowmonitoring
+    - python_env
+    - telegraf
+    - supervisor

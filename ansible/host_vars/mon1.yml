@@ -1,0 +1,4 @@
+services:
+  - apcups_y2o
+  - telegraf_power
+  - telegraf_computer

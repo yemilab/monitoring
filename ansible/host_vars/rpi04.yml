@@ -1,0 +1,3 @@
+services:
+  - radionode_UA52_a5hpge
+  - telegraf_sensor

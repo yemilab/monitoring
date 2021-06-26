@@ -1,0 +1,3 @@
+services:
+  - rad7-serial_YM-75ML
+  - telegraf_test

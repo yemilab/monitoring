@@ -1,0 +1,34 @@
+---
+- name: Check architechture
+  debug:
+    msg: Architecture is {{ ansible_facts['architecture'] }}
+    verbosity: 1
+
+- name: Download Telegraf
+  get_url:
+    url: https://dl.influxdata.com/telegraf/releases/{{ telegraf[ansible_facts['architecture']]['fname'] }}.tar.gz
+    dest: /tmp
+    mode: "0644"
+  when: telegraf['update'] == 'yes'
+
+- name: Create /tmp/telegraf
+  file:
+    path: /tmp/{{ telegraf[ansible_facts['architecture']]['fname'] }}
+    state: directory
+    mode: '0755'
+  when: telegraf['update'] == 'yes'
+
+- name: Extract Telegraf
+  unarchive:
+    src: /tmp/{{ telegraf[ansible_facts['architecture']]['fname'] }}.tar.gz
+    dest: /tmp/{{ telegraf[ansible_facts['architecture']]['fname'] }}
+    remote_src: yes
+  when: telegraf['update'] == 'yes'
+
+- name: Copy Telegraf
+  copy:
+    src: /tmp/{{ telegraf[ansible_facts['architecture']]['fname'] }}/{{ telegraf[ansible_facts['architecture']]['fpath'] }}
+    dest: "{{ slowmonitoring['basedir'] }}/telegraf/"
+    remote_src: yes
+    mode: "0755"
+  when: telegraf['update'] == 'yes'

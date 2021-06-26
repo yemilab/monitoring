@@ -1,0 +1,18 @@
+services:
+  - fire_a5
+  - leak_a5amore
+  - etusups
+  - etusupstemp
+  - avr_a5
+  - pcw_lt
+  - pcw_radon
+  - lutron_a5gas
+  - lutron_a5pcwounit
+  - lutron_a5hpge
+  - lutron_a5amore
+  - rad7_A5COSINE
+  - rad7_A5HPGe
+  - telegraf_power
+  - telegraf_sensor5s
+  - telegraf_sensor
+  - telegraf_computer

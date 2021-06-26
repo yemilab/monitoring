@@ -1,0 +1,3 @@
+services:
+  - voegtlin_gasflow_a5hpge
+  - telegraf_sensor
