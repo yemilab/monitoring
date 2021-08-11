@@ -1,6 +1,8 @@
 # Underground Laboratory Monitoring Script Repository
 
-## Requirements
+## For developers
+
+### Requirements
 
 - python3
 - python3-pip
@@ -24,7 +26,7 @@ For Debian fimily (Ubuntu...)
 sudo apt install python3 python3-pip python3-virtualenv
 ```
 
-## Clone and create virtual environment
+### Clone and create virtual environment
 
 ```
 git clone https://github.com/yemilab/monitoring.git
@@ -32,19 +34,19 @@ cd monitoring
 python3 -m venv venv
 ```
 
-## Directory structure
+## Ansible
 
-- `ansible`
-- `data`
-- `log`
-- `doc`
-- `scripts`
-- `supervisor`
-- `telegraf`
+TODO: document link
+
+## Service configurations
+
+```
+cd supervisor
+python service_generator.py
+```
 
 ## Run supervisorctl
 
 ```
 sudo .../venv/bin/supervisorctl -c .../supervisor/supervisor.conf
 ```
-
