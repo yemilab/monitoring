@@ -75,6 +75,8 @@ def parse_data(data):
     return ret
 
 def fetch(dev):
+    mode = 'latest'
+
     with serial.Serial(dev, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10) as ser:
         logging.info('Send ETX')
         ser.write(b'\x03\r\n')
@@ -82,18 +84,27 @@ def fetch(dev):
         ser.write(b'\x03\r\n')
         res = read_until_prompt(ser)
 
-        logging.info('Send Special Status')
-        ser.write(b'Special Status\r\n')
-        res = read_until_prompt(ser)
-        runnum = parse_runnum(res)
-        logging.debug(f'Run number is {runnum}')
+        if mode == 'latest':
+            logging.info('Send Special Status')
+            ser.write(b'Special Status\r\n')
+            res = read_until_prompt(ser)
+            runnum = parse_runnum(res)
+            logging.debug(f'Run number is {runnum}')
+            logging.info(f'Send Data Com {runnum:02d}')
+            ser.write(f'Data Com {runnum:2d}\r\n'.encode('ascii'))
+            res = read_until_prompt(ser)
+            logging.info('Parse data')
+            ret = parse_data(res)
+        elif mode == 'all':
+            logging.info(f'Special ComAll')
+            ser.write(f'Special ComAll\r\n'.encode('ascii'))
+            res = read_until_prompt(ser)
+            logging.info('Parse data')
+            ret = parse_data(res)
+        else:
+            logging.error('Unknown mode')
+            sys.exit(1)
 
-        logging.info(f'Send Data Com {runnum:02d}')
-        ser.write(f'Data Com {runnum:2d}\r\n'.encode('ascii'))
-        res = read_until_prompt(ser)
-        logging.info('Parse data')
-        ret = parse_data(res)
-        
         return ret
 
 def main():
